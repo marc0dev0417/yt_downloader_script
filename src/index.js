@@ -23,13 +23,11 @@ app.get('/download', async (request, response) => {
     }, (err, info) => {
         title = info.player_response.videoDetails.title.replace(/[^\x00-\x7F]/g, "");
         response.header('Content-Disposition', `attachment; filename="${title}.mp4"`);
-        
-       ytdl(url, {
-            format: 'mp4',
-        }).pipe(response);
-        
-        response.send({'data': response})
     });
 
+    ytdl(url, {
+        format: 'mp4',
+    }).pipe(response);
 
+    
 })
