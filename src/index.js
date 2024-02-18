@@ -4,6 +4,8 @@ const ytdl = require('ytdl-core');
 const app = express();
 const port = 8080;
 
+app.use(cors())
+
 app.listen(port, () => {
     console.log(`Im listening in port ${port}`)
 });
@@ -20,10 +22,14 @@ app.get('/download', async (request, response) => {
         format: 'mp4'
     }, (err, info) => {
         title = info.player_response.videoDetails.title.replace(/[^\x00-\x7F]/g, "");
+        response.header('Content-Disposition', `attachment; filename="${title}.mp4"`);
+        
+       ytdl(url, {
+            format: 'mp4',
+        }).pipe(response);
+        
+        response.send({'data': response})
     });
 
-    response.header('Content-Disposition', `attachment; filename="${title}.mp4"`);
-    ytdl(url, {
-        format: 'mp4',
-    }).pipe(response);
+
 })
